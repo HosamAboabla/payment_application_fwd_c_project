@@ -3,6 +3,7 @@
 
 
 #define uint8_t unsigned char
+#define uint32_t unsigned long long
 
 typedef struct ST_cardData_t
 {
