@@ -4,6 +4,10 @@
 
 #include "../Terminal/terminal.h"
 
+typedef enum EN_transState_t
+{
+    APPROVED, DECLINED_INSUFFECIENT_FUND, DECLINED_STOLEN_CARD, INTERNAL_SERVER_ERROR
+}EN_transState_t;
 
 typedef struct ST_transaction_t
 {
@@ -13,10 +17,6 @@ typedef struct ST_transaction_t
     uint32_t transactionSequenceNumber;
 }ST_transaction_t;
 
-typedef enum EN_transState_t
-{
-    APPROVED, DECLINED_INSUFFECIENT_FUND, DECLINED_STOLEN_CARD, INTERNAL_SERVER_ERROR
-}EN_transState_t;
 
 typedef enum EN_serverError_t
 {

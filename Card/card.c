@@ -17,6 +17,10 @@ EN_cardError_t getCardHolderName(ST_cardData_t *cardData)
 
     return OK;
 }
+
+
+
+
 EN_cardError_t getCardExpiryDate(ST_cardData_t *cardData)
 {
     // Format "MM/YY"
@@ -34,6 +38,16 @@ EN_cardError_t getCardExpiryDate(ST_cardData_t *cardData)
     return OK;
 
 }
+
+
+
+
+
+
+
+
+
+
 EN_cardError_t getCardPAN(ST_cardData_t *cardData)
 {
     uint8_t accountNumber[20];

@@ -24,7 +24,8 @@ EN_terminalError_t getTransactionDate(ST_terminalData_t *termData)
 }
 EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termData)
 {
-    // Format "MM/YY"
+    // Expiry date format "MM/YY"
+    // transation date format "DD/MM/YYYY"
     int expiry_date_year , expiry_date_month , transation_date_year , transaction_date_month;
 
     expiry_date_year = (cardData.cardExpirationDate[3] - '0' ) * 10 + (cardData.cardExpirationDate[4] - '0' ) + 2000;
@@ -38,11 +39,6 @@ EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termD
     transaction_date_month = (termData.transactionDate[3] - '0') * 10 + (termData.transactionDate[4] - '0');
 
 
-    printf("Expiry year: %d\n" , expiry_date_year);
-    printf("Expiry month: %d\n" , expiry_date_month);
-
-    printf("Transation year: %d\n" , transation_date_year);
-    printf("Transation month: %d\n" , transaction_date_month);
 
     if( expiry_date_year < transation_date_year )
         return EXPIRED_CARD;
@@ -51,6 +47,8 @@ EN_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termD
 
     return TERMINAL_OK;
 }
+
+
 EN_terminalError_t getTransactionAmount(ST_terminalData_t *termData)
 {
     float amount;
