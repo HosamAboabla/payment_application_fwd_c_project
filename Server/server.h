@@ -36,7 +36,7 @@ EN_serverError_t isValidAccount(ST_cardData_t *cardData);
 EN_serverError_t isAmountAvailable(ST_terminalData_t *termData , ST_cardData_t *cardData);
 EN_serverError_t saveTransaction(ST_transaction_t *transData);
 EN_serverError_t getTransaction(uint32_t transactionSequenceNumber, ST_transaction_t *transData);
-uint8_t getAccountIndex(ST_cardData_t *cardData);
+EN_transState_t updateBalance(ST_transaction_t* transData);
 
 
 #endif

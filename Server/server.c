@@ -34,15 +34,36 @@ EN_serverError_t isValidAccount(ST_cardData_t *cardData)
     return DECLINED_STOLEN_CARD;
 }
 
-uint8_t getAccountIndex(ST_cardData_t *cardData)
+EN_transState_t updateBalance(ST_transaction_t* transData)
 {
-    uint8_t accounts_len = accounts_len = sizeof(accounts) / sizeof(accounts[0]);
-    for(uint8_t i = 0 ; i < accounts_len ; i++)
+    uint8_t current_pan[20];
+    float current_balance , new_balance;
+    FILE* accounts_file;
+    accounts_file = fopen("./DB/accounts.txt" , "r+");
+    if( accounts_file == NULL)
+        return INTERNAL_SERVER_ERROR;
+
+    while( fscanf(accounts_file , "%s " , current_pan) != EOF)
     {
-        if(strcmp(cardData->primaryAccountNumber , accounts[i].primaryAccountNumber) == 0)
-            return i;
+        
+        if(strcmp(transData->cardHolderData.primaryAccountNumber , current_pan) == 0)
+        {
+
+            fscanf(accounts_file , "%f" , &current_balance);
+
+            new_balance = current_balance - transData->terminalData.transAmount;
+            fseek(accounts_file , -12 , SEEK_CUR);
+            fprintf(accounts_file , "%f" , new_balance);
+            break;
+        }
+        fscanf(accounts_file, "%*[^\n]\n");
     }
-}
+    fclose(accounts_file);
+
+    return APPROVED;
+    
+
+}   
 
 EN_serverError_t isAmountAvailable(ST_terminalData_t *termData , ST_cardData_t *cardData)
 {
@@ -80,7 +101,7 @@ EN_serverError_t saveTransaction(ST_transaction_t *transData)
         seqNumber++;
 
     transData->transactionSequenceNumber = seqNumber;
-    fprintf(transactions_file , "%s %s %s %f %f %s %d %ld\n" , 
+    fprintf(transactions_file , "%s, %s %s %f %f %s %d %ld\n" , 
      transData->cardHolderData.cardHolderName , transData->cardHolderData.primaryAccountNumber, transData->cardHolderData.cardExpirationDate,
      transData->terminalData.maxTransAmount , transData->terminalData.transAmount , transData->terminalData.transactionDate,
      transData->transState , transData->transactionSequenceNumber);
@@ -113,10 +134,7 @@ EN_transState_t recieveTransactionData(ST_transaction_t *transData)
         return INTERNAL_SERVER_ERROR;
     }
     
-    accounts[account_index].balance -= transData->terminalData.transAmount;
-    transData->transState = APPROVED;
-
-    return transData->transState;
+    return updateBalance(transData);
 }
 EN_serverError_t getTransaction(uint32_t transactionSequenceNumber, ST_transaction_t *transData)
 {
