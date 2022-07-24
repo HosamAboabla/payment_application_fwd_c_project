@@ -101,9 +101,9 @@ EN_serverError_t saveTransaction(ST_transaction_t *transData)
         seqNumber++;
 
     transData->transactionSequenceNumber = seqNumber;
-    fprintf(transactions_file , "%s, %s %s %f %f %s %d %ld\n" , 
+    fprintf(transactions_file , "%s, %s %s %f %s %d %ld\n" , 
      transData->cardHolderData.cardHolderName , transData->cardHolderData.primaryAccountNumber, transData->cardHolderData.cardExpirationDate,
-     transData->terminalData.maxTransAmount , transData->terminalData.transAmount , transData->terminalData.transactionDate,
+     transData->terminalData.transAmount , transData->terminalData.transactionDate,
      transData->transState , transData->transactionSequenceNumber);
     fclose(transactions_file);
 
@@ -138,11 +138,27 @@ EN_transState_t recieveTransactionData(ST_transaction_t *transData)
 }
 EN_serverError_t getTransaction(uint32_t transactionSequenceNumber, ST_transaction_t *transData)
 {
-    // if(transactionSequenceNumber >= 255)
-    //     return TRANSACTION_NOT_FOUND;
-    // if( transactions[transactionSequenceNumber] = *transData)
-    // {
-    //     *transData = transactions[transactionSequenceNumber];
-    // }
+    FILE* file;
+    uint8_t found = 0;
+    file = fopen("./DB/transactions.txt" , "r");
+    int state , temp;
+    while( fscanf(file , "%[^,], %s %s %f %s %d %ld\n" , 
+     &transData->cardHolderData.cardHolderName , &transData->cardHolderData.primaryAccountNumber, &transData->cardHolderData.cardExpirationDate,
+     &transData->terminalData.transAmount , &transData->terminalData.transactionDate,
+     &transData->transState , &transData->transactionSequenceNumber) != EOF)
+    {
+        if( transData->transactionSequenceNumber == transactionSequenceNumber)
+        {
+            found = 1;
+            break;
+        }
+    }
+
+    fclose(file);
+    if(found)
+        return SERVER_OK;
     
+    transData = (ST_transaction_t*)  NULL;
+
+    return TRANSACTION_NOT_FOUND;   
 }
