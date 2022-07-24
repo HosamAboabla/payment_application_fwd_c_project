@@ -54,7 +54,7 @@ EN_cardError_t getCardPAN(ST_cardData_t *cardData)
 
     printf("Please enter your PAN: ");
     _flushall();
-    scanf("%s" , accountNumber);
+    scanf("%[^\n]" , accountNumber);
 
     if(accountNumber == NULL || strlen(accountNumber) < 16 || strlen(accountNumber) > 19)
         return WRONG_PAN;
