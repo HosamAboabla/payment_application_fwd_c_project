@@ -13,6 +13,11 @@ void appStart(void)
     getCardExpiryDate(&card);
     getCardPAN(&card);
 
+    if( isValidAccount(&card) != SERVER_OK)
+    {
+        printf("Decliend invalid account.");
+        return ;
+    }
     // Terminal
     ST_terminalData_t terminal;
 
@@ -32,32 +37,21 @@ void appStart(void)
         return ;
     }
 
-    if( isValidAccount(&card) != SERVER_OK)
-    {
-        printf("Decliend invalid account.");
-        return ;
-    }
 
     if( isAmountAvailable(&terminal , &card) != SERVER_OK)
     {
         printf("Decliend insuffecient funds.");
         return ;
     }
-    
-
-    ST_transaction_t transaction = { card , terminal };
-
-    recieveTransactionData(&transaction);
-    uint8_t account_index = getAccountIndex(&card);
-
-    printf("=================== Transaction details ===================\n");
-    printf("card holder name: %s\n" , transaction.cardHolderData.cardHolderName );
-    printf("card pan: %s\n" , transaction.cardHolderData.primaryAccountNumber );
-    printf("Expiry Date: %s\n" , transaction.cardHolderData.cardExpirationDate );
-    printf("Transation Date: %s\n" , transaction.terminalData.transactionDate );
-    printf("Terminal max amount: %f\n" , transaction.terminalData.maxTransAmount );
-    printf("Terminal amount: %f\n" , transaction.terminalData.transAmount );
-    printf("Your new balance = %f\n" , accounts[account_index].balance );
-    printf("Transation state %d\n" , transaction.transState );
+    ST_transaction_t transaciont = { card , terminal , 0 , 0};
+    uint8_t state = recieveTransactionData(&transaciont); 
+    if ( state == APPROVED)
+    {
+        printf("Success.");
+    }
+    else
+    {
+        printf("Error");
+    }
 
 }
