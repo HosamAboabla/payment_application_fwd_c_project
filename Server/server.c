@@ -102,7 +102,6 @@ EN_serverError_t saveTransaction(ST_transaction_t *transData)
 
 EN_transState_t recieveTransactionData(ST_transaction_t *transData)
 {
-    uint8_t accounts_len , account_index;
     
     transData->transState = APPROVED;
     // Check if the account exists using primary account number
@@ -118,12 +117,12 @@ EN_transState_t recieveTransactionData(ST_transaction_t *transData)
     }
     
     // save transation data
-    if( saveTransaction(transData) == SAVING_FAILED )
+    if( saveTransaction(transData) == SAVING_FAILED || updateBalance(transData) != APPROVED )
     {
         return INTERNAL_SERVER_ERROR;
     }
     
-    return updateBalance(transData);
+    return transData->transState;
 }
 EN_serverError_t getTransaction(uint32_t transactionSequenceNumber, ST_transaction_t *transData)
 {
