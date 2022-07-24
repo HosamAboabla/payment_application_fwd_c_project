@@ -4,16 +4,6 @@
 
 #include "server.h"
 
-ST_accountsDB_t accounts[255] = { 
-                        { 1000 , "123456789123456780" } , { 2000 , "123456789123456781" }, { 2000 , "123456789123456782" }, 
-                        { 2000 , "123456789123456783" }, { 2000 , "123456789123456784" }, { 2000 , "123456789123456785" }, 
-                        { 2000 , "123456789123456786" }, { 2000 , "123456789123456787" }, { 2000 , "123456789123456788" }, 
-                        { 2000 , "123456789123456789" },
-                    };
-
-ST_transaction_t transactions[255];
-uint32_t SEQUENCE_TRANSACTION_NUMBER = 0;
-
 
 EN_serverError_t isValidAccount(ST_cardData_t *cardData)
 {
@@ -113,7 +103,6 @@ EN_serverError_t saveTransaction(ST_transaction_t *transData)
 EN_transState_t recieveTransactionData(ST_transaction_t *transData)
 {
     uint8_t accounts_len , account_index;
-    accounts_len = sizeof(accounts) / sizeof(accounts[0]);
     
     transData->transState = APPROVED;
     // Check if the account exists using primary account number
