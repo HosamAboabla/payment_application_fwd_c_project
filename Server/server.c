@@ -14,7 +14,7 @@ EN_serverError_t isValidAccount(ST_cardData_t *cardData)
 
     accounts_file = fopen("./DB/accounts.txt" , "r");
 
-    while( fscanf( accounts_file , "%f %s" , &account_balance , account_pan ) != EOF)
+    while( fscanf( accounts_file , "%s %f" , account_pan , &account_balance ) != EOF)
     {
         if(strcmp( cardData->primaryAccountNumber , account_pan) == 0)
             return SERVER_OK;
