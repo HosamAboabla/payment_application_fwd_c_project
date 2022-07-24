@@ -64,7 +64,7 @@ EN_serverError_t isAmountAvailable(ST_terminalData_t *termData , ST_cardData_t *
 
     accounts_file = fopen("./DB/accounts.txt" , "r");
 
-    while( fscanf( accounts_file , "%f %s" , &account_balance , account_pan ) != EOF)
+    while( fscanf( accounts_file , "%s %f" , account_pan , &account_balance ) != EOF)
     {
         if(strcmp( cardData->primaryAccountNumber , account_pan) == 0)
         {
